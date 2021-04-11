@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+        <head>
+                <title>Musicbox</title>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+        </head>
+
+        <body class="bg-light">
+		<div id="app">
+                        <header>
+                                <nav class="navbar navbar-dark bg-dark shadow-sm">
+                                        <a class="navbar-brand" href="#">Musicbox</a>
+                                </nav>
+                        </header>
+
+                        <main role="main">
+
+                                <section class="jumbotron">
+					<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+						<div class="col p-3 mx-auto" v-for="items in current_cards" v-if="Object.keys(items)[0]">
+							<tag-card
+								v-for="(card, tag_id) in items"
+								v-if="tag_id"
+								v-bind:key="tag_id"
+								v-bind:tag_id="tag_id"
+								v-bind:card="card"
+							></tag-card>
+						</div>
+					</div>
+                                </section>
+
+				<div class="container my-3 p-3 bg-white rounded shadow-sm">
+					<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+						<div class="col p-3" v-for="(card, tag_id) in cards">
+							<tag-card
+								v-bind:key="tag_id"
+								v-bind:tag_id="tag_id"
+								v-bind:card="card"
+							></tag-card>
+						</div>
+					</div>
+				</div>
+			</main>
+		</div>
+	
+		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+                <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+		<script>
+			Vue.component('tag-card', {
+				props: ['tag_id', 'card'],
+				data: () => {
+					return {
+						saving: false,
+						editing: false,
+					}
+				},
+				template: `
+					<div class="h-100 card">
+						<a v-if="!editing && card.art" class="card-img-top border-bottom" target="_blank" v-bind:href="card.content_id">
+							<img class="card-img-top" v-bind:src="card.art" />
+						</a>
+						<div v-if="editing" class="card-body">
+							<div class="form-group">
+								<label :for="tag_id + '_content_id'">Spotify URL</label>
+								<input type="text" class="form-control" :id="tag_id + '_content_id'" ref="content_id" :value="card.content_id" :disabled="saving" />
+							</div>
+							<div class="form-group">
+								<label :for="tag_id + '_shuffle'">Shuffle</label>
+								<input type="checkbox" class="form-control" :id="tag_id + '_shuffle'" ref="shuffle" :checked="card.shuffle" :disabled="saving" />
+							</div>
+							<button class="btn btn-primary" v-on:click="save(card)" type="submit" :disabled="saving">Save</button>
+							<button class="btn btn-secondary" v-on:click="cancelEdit(card)" type="submit" :disabled="saving">Cancel</button>
+						</div>
+						<div v-else class="card-body">
+							<h6 v-if="card.title" class="card-title">{{ card.title }}</h6>
+							<p v-if="card.description" class="card-text">{{ card.description }}</p>
+							<p v-if="!card.content_id" class="card-text text-muted">
+								This tag has no content assigned.
+								You can <a href="#" class="card-link" v-on:click.prevent.stop="edit(card)">edit this card</a> and assign some content!
+							</p>
+						</div>
+						<div class="card-footer">
+							<small class="text-muted"><code>{{ tag_id }}</code></small>
+							<a href="#" class="card-link" v-on:click.prevent.stop="edit(card)" :hidden="editing">
+								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+									<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+								</svg>
+							</a>
+						</div>
+					</div>
+				`,
+				methods: {
+					edit (item) {
+						this._originalCache = Object.assign({}, item);
+						this.editing = item;
+					},
+					cancelEdit (item) {
+						Object.assign(item, this._originalCache);
+						this.editing = false;
+					},
+					save (item) {
+						this.saving = true;
+						const content_id = this.$refs['content_id'].value;
+						const shuffle = this.$refs['shuffle'].checked;
+
+						axios
+						.get('', {
+							params: {
+								id: this.tag_id,
+								content_id: content_id,
+								shuffle: shuffle ? 'on' : 'off',
+							}
+						})
+						.then((response) => {
+							console.log(response.data);
+
+							// card_properties.forEach(key => this.$set(this.card, key, response.data[key]));
+							Object.assign(item, response.data);
+
+							this.editing = false;
+							this.saving = false;
+						});
+					},
+				}
+			});
+
+			const app = new Vue({
+				el: '#app',
+				data () {
+					return {
+						current_cards: [],
+						cards: null,
+						_interval: null,
+					}
+				},
+				created () {
+					this.getCurrent();
+					this._interval = setInterval(this.getCurrent, 2000);
+				},
+				mounted () {
+					axios
+					.get('?list')
+					.then((response) => {
+						this.cards = response.data;
+					});
+				},
+				methods: {
+					getCurrent() {
+						axios
+						.get('?current')
+						.then((response) => {
+							if (JSON.stringify(this.current_cards) != JSON.stringify(response.data)) {
+								console.log("Updating current cards...");
+								Object.assign(this.current_cards, response.data);
+							}
+						});
+					},
+					cancelInterval () {
+						clearInterval(this._interval);
+					},
+				},
+				beforeDestroy () {
+					this.cancelInterval();
+				}
+			});
+		</script>
+	</body>
+</html>
