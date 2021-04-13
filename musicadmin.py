@@ -128,6 +128,8 @@ class App(hass.Hass):
             return self.web_token(req)
         elif 'parse' in req.query:
             return self.web_parse(req, req.query['parse'])
+        elif 'icon' in req.query:
+            return self.icon(req)
         else:
             return self.web_page(req)
 
@@ -169,6 +171,11 @@ class App(hass.Hass):
 
     def web_parse(self, req, url):
         return web.Response(text=json.dumps(self.spotify.data(url)), content_type="application/json")
+
+    def icon(self, req):
+        svg = """<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="24" height="24" viewBox="0 0 24 24"><path d="M16,9V7H12V12.5C11.58,12.19 11.07,12 10.5,12A2.5,2.5 0 0,0 8,14.5A2.5,2.5 0 0,0 10.5,17A2.5,2.5 0 0,0 13,14.5V9H16M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z" /></svg>"""
+
+        return web.Response(text=svg, content_type='image/svg+xml')
 
     def web_page(self, req):
         file_name = os.path.join(os.path.dirname(__file__), 'musicadmin.html')
