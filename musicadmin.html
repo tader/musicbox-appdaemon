@@ -60,7 +60,7 @@
 					}
 				},
 				template: `
-					<div class="h-100 card">
+					<div v-if="card" class="h-100 card">
 						<a v-if="!editing && card.art" class="card-img-top border-bottom" target="_blank" v-bind:href="card.content_id">
 							<img class="card-img-top" v-bind:src="card.art" />
 						</a>
@@ -156,7 +156,7 @@
 						.then((response) => {
 							if (JSON.stringify(this.current_cards) != JSON.stringify(response.data)) {
 								console.log("Updating current cards...");
-								Object.assign(this.current_cards, response.data);
+								this.current_cards = response.data;
 							}
 						});
 					},
