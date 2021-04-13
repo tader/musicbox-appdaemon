@@ -81,7 +81,7 @@
 							<p v-if="card.description" class="card-text">{{ card.description }}</p>
 							<p v-if="!card.content_id" class="card-text text-muted">
 								This tag has no content assigned.
-								You can <a href="#" class="card-link" v-on:click.prevent.stop="edit(card)">edit this card</a> and assign some content!
+								You can <a href="#" class="card-link" v-on:click.prevent.stop="edit(card)">edit this tag</a> and assign some content!
 							</p>
 						</div>
 						<div class="card-footer">
@@ -96,7 +96,7 @@
 					<div v-else class="h-100 card bg-light">
 		       				<div class="card-body h-100 text-muted align-self-center" style="display: table">
 		       					<span style="display: table-cell; vertical-align: middle;">
-		       					No Card Present
+		       					no tag detected
 		       					</span>
 		       				</div>
 					</div>
