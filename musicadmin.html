@@ -20,10 +20,9 @@
 
                                 <section class="jumbotron">
 					<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-						<div class="col p-3 mx-auto" v-for="items in current_cards" v-if="Object.keys(items)[0]">
+						<div class="col p-3 mx-auto" v-for="items in current_cards">
 							<tag-card
 								v-for="(card, tag_id) in items"
-								v-if="tag_id"
 								v-bind:key="tag_id"
 								v-bind:tag_id="tag_id"
 								v-bind:card="card"
@@ -93,6 +92,13 @@
 								</svg>
 							</a>
 						</div>
+					</div>
+					<div v-else class="h-100 card bg-light">
+		       				<div class="card-body h-100 text-muted align-self-center" style="display: table">
+		       					<span style="display: table-cell; vertical-align: middle;">
+		       					No Card Present
+		       					</span>
+		       				</div>
 					</div>
 				`,
 				methods: {
