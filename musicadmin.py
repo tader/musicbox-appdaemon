@@ -110,7 +110,7 @@ class App(hass.Hass):
             self.current[entity] = new
 
     async def index(self, req):
-        self.log(f"Index({req.path})")
+        self.log(f"Index({req.url})")
 
         if 'id' in req.query:
             return self.web_get_set_card(req)
