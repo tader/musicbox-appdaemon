@@ -43,7 +43,7 @@ class Spotify:
                 https://open\.spotify\.com\/
                 ([^\/]+)\/
                 ([^?]+)
-                ([?].*)
+                ([?].*)?
                 $
             """,
             re.X
