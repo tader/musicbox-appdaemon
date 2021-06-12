@@ -110,6 +110,7 @@ class App(hass.Hass):
             self.current[entity] = new
 
     async def index(self, req):
+        # req: https://docs.aiohttp.org/en/stable/web_reference.html
         self.log(f"Index({req.url})")
 
         if 'id' in req.query:
