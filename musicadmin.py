@@ -87,10 +87,6 @@ class App(hass.Hass):
 
         self.register_route(self.index)
 
-    def fix_cards(self):
-        for card in self.cards.list():
-            self.set_card_from_spotify_url(card, card.content_id)
-
     def set_card_from_spotify_url(self, card, url):
         item = self.spotify.parse_url(url)
         if item:
@@ -127,24 +123,33 @@ class App(hass.Hass):
         elif 'token' in req.query:
             return self.web_token(req)
         elif 'parse' in req.query:
-            return self.web_parse(req, req.query['parse'])
+            return self.web_parse(req, req.query.get('parse'))
         elif 'icon' in req.query:
             return self.icon(req)
         else:
             return self.web_page(req)
 
     def web_get_set_card(self, req):
-        card = self.cards.get(req.query['id'])
-        if 'content_id' in req.query:
-            self.set_card_from_spotify_url(card, req.query['content_id'])
-        if 'shuffle' in req.query:
-            card.shuffle = req.query['shuffle'] == "on"
-        if 'content_id' in req.query or 'shuffle' in req.query:
+        update = False
+        card_id = req.query.get('id')
+        content_id = req.query.get('content_id')
+        shuffle = req.query.get('shuffle')
+
+        card = self.cards.get(card_id)
+        if content_id is not None and content_id != card.content_id:
+            self.set_card_from_spotify_url(card, content_id)
+            update = True
+        if 'shuffle' is not None:
+            new_shuffle = shuffle == "on"
+            if card.shuffle != new_shuffle:
+                card.shuffle = new_shuffle
+                update = True
+        if update:
             self.cards.store(card)
         return web.Response(text=card.json(), content_type="application/json")
 
     def web_drop_card(self, req):
-        card = self.cards.get(req.query['drop'])
+        card = self.cards.get(req.query.get('drop'))
         if card:
             self.cards.drop(card)
         return web.Response(text=card.json(), content_type="application/json")
@@ -158,7 +163,6 @@ class App(hass.Hass):
         return web.Response(text=json.dumps(current_cards), content_type="application/json")
 
     def web_list_cards(self, req):
-        #self.fix_cards()
         all_cards = {
             card.id: card.as_dict()
             for card in self.cards.list()
