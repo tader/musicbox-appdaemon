@@ -141,6 +141,10 @@
 						});
 					},
 					drop (item, cards=false) {
+									if (!confirm(`Really delete ${this.tag_id} (${this.card.title})?`)) {
+						return;
+					    }
+
 					    this.saving = true;
 					    axios
 						.get('', {
