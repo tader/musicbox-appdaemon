@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
         <head>
-                <title>Musicbox</title>
-                <meta charset="utf-8" />
+        <title>Musicbox</title>
+        <meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
 		<link rel="icon" type="image/svg+xml" href="?icon" />
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
@@ -75,6 +75,7 @@
 							</div>
 							<button class="btn btn-primary" v-on:click="save(card)" type="submit" :disabled="saving">Save</button>
 							<button class="btn btn-secondary" v-on:click="cancelEdit(card)" type="submit" :disabled="saving">Cancel</button>
+							<button class="btn btn-secondary" v-on:click="deleteCard(card)" type="submit" :disabled="saving">Remove</button>
 						</div>
 						<div v-else class="card-body">
 							<h6 v-if="card.title" class="card-title">{{ card.title }}</h6>
@@ -133,6 +134,15 @@
 							this.saving = false;
 						});
 					},
+					deleteCard (item) {
+					    axios
+						.get('', {
+							params: {
+								drop: this.tag_id
+							}
+						})
+						this.editing = false;
+					}
 				}
 			});
 
