@@ -135,13 +135,17 @@
 						});
 					},
 					deleteCard (item) {
+					    this.saving = true;
 					    axios
 						.get('', {
 							params: {
 								drop: this.tag_id
 							}
 						})
-						this.editing = false;
+						.then((response) => {
+							this.editing = false;
+							this.saving = false;
+						});
 					}
 				}
 			});
