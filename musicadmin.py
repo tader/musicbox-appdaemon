@@ -109,7 +109,7 @@ class App(hass.Hass):
         if new not in ("unavailable", "unknown"):
             self.current[entity] = new
 
-    async def index(self, req):
+    async def index(self, req, *args, **kwargs):
         # req: https://docs.aiohttp.org/en/stable/web_reference.html
         self.log(f"Index({req.url})")
 
