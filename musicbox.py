@@ -187,15 +187,24 @@ class SonosPlayer(Player):
         return result
 
     def prepare(self):
+        current_group = self.get_state(self.player_entity, 'group_members')
         if self.player_group:
-            current_group = self.get_state(self.player_entity, 'sonos_group')
             if not current_group or set(current_group) != set([self.player_entity] + self.player_group):
                 self.log(f"Grouping SONOS speakers...")
                 self.call(
-                    'sonos/join',
-                    master=self.player_entity,
-                    entity_id=self.player_group,
+                    'media_player/join',
+                    entity_id=self.player_entity,
+                    group_members=self.player_group,
                 )
+        else:
+            # disabled because inconvenient
+            pass
+            #if not current_group or len(current_group) > 0:
+            #    self.call(
+            #        'sonos/unjoin',
+            #        entity_id=self.player_entity,
+            #    )
+
 
     def get_media_content_type(self, card: Card) -> str:
         return "music"
@@ -205,7 +214,8 @@ class SonosPlayer(Player):
         
         for player in self.players():
             player_volume = self.get_state(player, 'volume_level')
-            volume = max(volume, player_volume)
+            if player_volume is not None:
+                volume = max(volume, player_volume)
 
         return volume
 

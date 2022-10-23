@@ -79,11 +79,12 @@ class App(hass.Hass):
             self.args['spotify']['client_secret'],
         )
         self.current = {}
+
         for entity in self.args.get('tag_id_entities', []):
             self.current[entity] = None
             self.log(f"Listening '{entity}' for tag changes...")
             self.on_event(entity, None, None, self.get_state(entity), {})
-            self.listen_state(self.on_event, entity)
+        self.listen_state(self.on_event, self.args.get('tag_id_entities', []))
 
         self.register_route(self.index)
 

@@ -1,43 +1,43 @@
----
-musicadmin:
-  module: musicadmin
-  class: App
-  tag_id_entities:
-    - sensor.musicbox_current_tag
-    - sensor.esp200_current_tag
-    - sensor.tagreader_current_tag
-  spotify:
-    client_id: XXXXXXXXXXXX
-    client_secret: XXXXXXXXXXXX
-
-musicbox_marit:
-  module: musicbox
-  class: App
-  tag_id_entity: sensor.tagreader_current_tag
-  player_type: spotify
-  player_entity: media_player.spotify_thomas_de_ruiter
-  player_source: Echo
-  volume_default: .2  # always set volume to 20%
-
-musicbox_televison:
-  module: musicbox
-  class: App
-  tag_id_entity: sensor.musicbox_current_tag
-  player_type: sonos
-  player_entity: media_player.television
-  player_group:
-    - media_player.kitchen  # make sure television is in a group with kitchen
-  volume_default: .10  # set volume to 10%
-  volume_min: .05      # if current volume <= 5%
-  volume_max: .15      # or current volume >= 15%
-
-musicbox_attic:
-  module: musicbox
-  class: App
-  tag_id_entity: sensor.esp200_current_tag
-  player_type: sonos
-  player_entity: media_player.attic
-  volume_default: .10
-  volume_min: .05
-  volume_max: .15
-
+#---
+#musicadmin:
+#  module: musicadmin
+#  class: App
+#  tag_id_entities:
+#    - sensor.musicbox_current_tag
+#    - sensor.esp200_current_tag
+#    - sensor.tagreader_current_tag
+#  spotify:
+#    client_id: XXXXXXXXXXXX
+#    client_secret: XXXXXXXXXXXX
+#
+#musicbox_marit:
+#  module: musicbox
+#  class: App
+#  tag_id_entity: sensor.tagreader_current_tag
+#  player_type: spotify
+#  player_entity: media_player.spotify_thomas_de_ruiter
+#  player_source: Echo
+#  volume_default: .2  # always set volume to 20%
+#
+#musicbox_televison:
+#  module: musicbox
+#  class: App
+#  tag_id_entity: sensor.musicbox_current_tag
+#  player_type: sonos
+#  player_entity: media_player.television
+#  player_group:
+#    - media_player.kitchen  # make sure television is in a group with kitchen
+#  volume_default: .10  # set volume to 10%
+#  volume_min: .05      # if current volume <= 5%
+#  volume_max: .15      # or current volume >= 15%
+#
+#musicbox_attic:
+#  module: musicbox
+#  class: App
+#  tag_id_entity: sensor.esp200_current_tag
+#  player_type: sonos
+#  player_entity: media_player.attic
+#  volume_default: .10
+#  volume_min: .05
+#  volume_max: .15
+#
